@@ -10,5 +10,7 @@ pyrightconfig.json
 
 chatbox-db*
 
+.env
+
 # Virtual environments
 .venv

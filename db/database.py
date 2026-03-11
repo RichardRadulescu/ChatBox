@@ -23,10 +23,11 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def init_db():
-    from .usersTable import UsersTable
-    from .filesTable import FilesTable
-
     Base.metadata.create_all(bind=engine)
+
+
+def close_db():
+    engine.dispose()
 
 
 def get_db():
