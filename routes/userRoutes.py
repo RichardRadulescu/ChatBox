@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.database import get_db
@@ -8,18 +9,10 @@ from models.user import UserRead, UserWrite
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.post("/", response_model=UserRead)
-def create_user(user: UserWrite, db: Session = Depends(get_db)):
-    db_user = UsersTable(
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        hashed_password=user.password,
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+@router.get("/", response_model=List[UserRead])
+def read_users(db: Session = Depends(get_db)):
+    result = db.query(UsersTable).all()
+    return result
 
 
 @router.get("/{user_id}", response_model=UserRead)
