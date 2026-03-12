@@ -1,4 +1,5 @@
 from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, model_validator
 
 
@@ -19,7 +20,7 @@ class FileRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     name: str
-    file_type: str
+    type: str
     text_content: Optional[str] = None
     blob_content: Optional[bytes] = None
 

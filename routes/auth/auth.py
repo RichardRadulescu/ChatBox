@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
 from db.database import get_db
 from db.usersTable import UsersTable
-from models.user import UserRead, UserWrite
+from models.user import UserRead, UserResponseWithToken, UserWrite
 from utils.hashing import hash_password
-
+from utils.security import create_access_token
 
 router = APIRouter(prefix="/auth", tags=["users"])
 
@@ -19,7 +20,7 @@ async def verify_email_unique(user: UserWrite, db: Session = Depends(get_db)):
     return userExists
 
 
-@router.post("/", response_model=UserRead)
+@router.post("/", response_model=UserResponseWithToken)
 def create_user(
     user: UserWrite,
     db: Session = Depends(get_db),
@@ -34,4 +35,8 @@ def create_user(
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user
+
+    data = {"sub": str(db_user.id)}
+    token = create_access_token(data)
+
+    return {"access_token": token, "token_type": "bearer", "user": db_user}

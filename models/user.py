@@ -16,3 +16,9 @@ class UserRead(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
+
+
+class UserResponseWithToken(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserRead
